@@ -274,8 +274,14 @@ end
 local Dropdown = TabTeleport:Dropdown({
     Title = "Select Teleport Location",
     Desc = "Pilih lokasi untuk teleport",
-    Values = teleportTo,
-    Value = teleportTo[1],
+    Values = table.getn and table.getn(teleportLocations) or (function()
+        local keys = {}
+        for name in pairs(teleportLocations) do
+            table.insert(keys, name)
+        end
+        return keys
+    end)(),
+    Value = nil,
     Multi = false,
     AllowNone = false,
     Callback = function(selected)
@@ -287,7 +293,11 @@ local Dropdown = TabTeleport:Dropdown({
                 Content = "Berhasil teleport ke " .. selected
             })
         else
-            warn("Lokasi teleport tidak ditemukan:", selected)
+            WindUI:Notify({
+                Title = "Teleport Error",
+                Content = "Lokasi teleport tidak ditemukan!"
+            })
         end
     end
 })
+
