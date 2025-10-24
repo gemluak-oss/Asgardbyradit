@@ -274,8 +274,8 @@ end
 local Dropdown = TabTeleport:Dropdown({
     Title = "Select Teleport Location",
     Desc = "Pilih lokasi untuk teleport",
-    Values = teleportNames,
-    Value = teleportNames[1],
+    Values = teleportTo,
+    Value = teleportTo[1],
     Multi = false,
     AllowNone = false,
     Callback = function(selected)
