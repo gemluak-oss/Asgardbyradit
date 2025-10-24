@@ -237,43 +237,38 @@ MainTab:Slider({
 })
 
 
--- 🗺️ Tab Teleport
+-- 🗺️ TAB TELEPORT
 local TabTeleport = Window:Tab({
     Title = "Teleport",
     Icon = "map-pin"
 })
 
--- 📍 Daftar lokasi teleport
+-- 📍 Daftar lokasi teleport (CFrame lengkap)
 local teleportLocations = {
-    ["Crater Islands"] = CFrame.new(1066.1864, 57.2025681, 5045.5542),
-    ["Tropical Grove"] = CFrame.new(-2165.05469, 2.77070165, 3639.87451),
-    ["Volcano Island"] = CFrame.new(-701.447937, 48.1446075, 93.1546631),
-    ["Coral Reefs"] = CFrame.new(-3118.39624, 2.42531538, 2135.26392),
-    ["Winter Tundra"] = CFrame.new(2036.15308, 6.54998732, 3381.88916),
-    ["Weather Machine"] = CFrame.new(-1459.3772, 14.7103214, 1831.5188),
-    ["Treasure Room"] = CFrame.new(-3625.0708, -279.074219, -1594.57605),
-    ["Sisyphus Statue"] = CFrame.new(-3777.43433, -135.074417, -975.198975),
-    ["Fisherman Island"] = CFrame.new(-75.2439423, 3.24433279, 3103.45093),
-    ["Ancient Jungle"] = CFrame.new(1630.15234, 6.62499952, -724.767212),
-    ["Sacred Temple"] = CFrame.new(1468.44946, -22.1250019, -651.350342),
+    ["Crater Islands"] = CFrame.new(1066.1864, 57.2025681, 5045.5542, -0.682534158, 1.00865822e-08, 0.730853677, -5.8900711e-09, 1, -1.93017531e-08, -0.730853677, -1.74788859e-08, -0.682534158),
+    ["Tropical Grove"] = CFrame.new(-2165.05469, 2.77070165, 3639.87451, -0.589090407, -3.61497356e-08, -0.808067143, -3.20645626e-08, 1, -2.13606164e-08, 0.808067143, 1.3326984e-08, -0.589090407),
+    ["Volcano Island"] = CFrame.new(-701.447937, 48.1446075, 93.1546631, -0.0770962164, 1.34335654e-08, -0.997023642, 9.84464776e-09, 1, 1.27124169e-08, 0.997023642, -8.83526763e-09, -0.0770962164),
+    ["Coral Reefs"] = CFrame.new(-3118.39624, 2.42531538, 2135.26392, 0.92336154, -1.0069185e-07, -0.383931547, 8.0607947e-08, 1, -6.84016968e-08, 0.383931547, 3.22115596e-08, 0.92336154),
+    ["Winter Tundra"] = CFrame.new(2036.15308, 6.54998732, 3381.88916, 0.943401575, 4.71338666e-08, -0.331652641, -3.28136842e-08, 1, 4.87781051e-08, 0.331652641, -3.51345975e-08, 0.943401575),
+    ["Weather Machine"] = CFrame.new(-1459.3772, 14.7103214, 1831.5188, 0.777951121, 2.52131862e-08, -0.628324807, -5.24126378e-08, 1, -2.47663063e-08, 0.628324807, 5.21991339e-08, 0.777951121),
+    ["Treasure Room"] = CFrame.new(-3625.0708, -279.074219, -1594.57605, 0.918176472, -3.97606392e-09, -0.396171629, -1.12946204e-08, 1, -3.62128851e-08, 0.396171629, 3.77244298e-08, 0.918176472),
+    ["Sisyphus Statue"] = CFrame.new(-3777.43433, -135.074417, -975.198975, -0.284491211, -1.02338751e-08, -0.958678663, 6.38407585e-08, 1, -2.96199456e-08, 0.958678663, -6.96293867e-08, -0.284491211),
+    ["Fisherman Island"] = CFrame.new(-75.2439423, 3.24433279, 3103.45093, -0.996514142, -3.14880424e-08, -0.0834242329, -3.84156422e-08, 1, 8.14354024e-08, 0.0834242329, 8.43563228e-08, -0.996514142),
+    ["Ancient Jungle"] = CFrame.new(1630.15234, 6.62499952, -724.767212, 0.425332367, 6.19636324e-08, -0.905037224, -6.98903548e-08, 1, 3.56195322e-08, 0.905037224, 4.81032352e-08, 0.425332367),
+    ["Sacred Temple"] = CFrame.new(1468.44946, -22.1250019, -651.350342, -0.114698552, -1.09982246e-07, 0.993400335, -1.87054479e-08, 1, 1.08553166e-07, -0.993400335, -6.13110718e-09, -0.114698552),
 }
 
--- 🚀 Fungsi teleport
+-- 🚀 Fungsi Teleport (pakai rotasi juga)
 local function teleportTo(cf)
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if hrp then
-        hrp.CFrame = cf
-        WindUI:Notify({
-            Title = "🚀 Teleport",
-            Content = "Berhasil teleport!",
-        })
+        char:SetPrimaryPartCFrame(cf)
     else
-        warn("HumanoidRootPart tidak ditemukan!")
+        warn("❌ HumanoidRootPart tidak ditemukan!")
     end
 end
 
--- 🔽 Dropdown Teleport
 local locationNames = {}
 for name in pairs(teleportLocations) do
     table.insert(locationNames, name)
@@ -281,7 +276,7 @@ end
 
 TabTeleport:Dropdown({
     Title = "Select Teleport Location",
-    Desc = "Pilih lokasi untuk teleport",
+    Desc = "Pilih lokasi tujuan",
     Values = locationNames,
     Value = nil,
     Multi = false,
@@ -295,4 +290,3 @@ TabTeleport:Dropdown({
         end
     end
 })
-
