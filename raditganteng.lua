@@ -91,10 +91,14 @@ local function reelNow()
     local r = getFishingRemotes()
     if not r then return end
     task.spawn(function()
-        for _ = 1, 25 do
-            r.complete:FireServer()
-            task.wait(0.015)
-        end
+        for i = 1, 30 do
+            complete:FireServer()
+            if i % 10 == 0 then
+                task.wait(0.002) -- micro sync tiap 10 kali
+            else
+                 task.wait()
+            end
+         end
     end)
 end
 
