@@ -260,20 +260,32 @@ local teleportLocations = {
 
 local function teleportTo(cf)
     local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    hrp.CFrame = cf
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char:PivotTo(cf) -- lebih aman daripada langsung set CFrame
+    else
+        WindUI:Notify({
+            Title = "Teleport Error",
+            Content = "HumanoidRootPart tidak ditemukan!",
+        })
+    end
 end
+
+
 local Dropdown = TabTeleport:Dropdown({
     Title = "Select Teleport Location",
     Desc = "Pilih lokasi untuk teleport",
-    Values = table.keys(teleportLocations),
-    Value = nil,
+    Values = teleportNames,
+    Value = teleportNames[1],
     Multi = false,
     AllowNone = false,
     Callback = function(selected)
         local cf = teleportLocations[selected]
         if cf then
             teleportTo(cf)
+            WindUI:Notify({
+                Title = "Teleport",
+                Content = "Berhasil teleport ke " .. selected
+            })
         else
             warn("Lokasi teleport tidak ditemukan:", selected)
         end
