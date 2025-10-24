@@ -90,7 +90,7 @@ local function reelNow()
     if not r then return end
     task.spawn(function()
         for i = 1, 30 do
-            complete:FireServer()
+            r.complete:FireServer()
             if i % 10 == 0 then
                 task.wait(0.002) -- micro sync tiap 10 kali
             else
