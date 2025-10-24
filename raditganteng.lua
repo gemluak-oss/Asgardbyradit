@@ -278,10 +278,5 @@ TabTeleport:Dropdown({
     AllowNone = false,
     Callback = function(selected)
         local cf = teleportLocations[selected]
-        if cf then
-            teleportTo(cf)
-        else
-            warn("Lokasi teleport tidak ditemukan:", selected)
-        end
     end
 })
