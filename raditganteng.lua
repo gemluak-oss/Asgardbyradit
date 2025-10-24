@@ -243,7 +243,6 @@ local TabTeleport = Window:Tab({
     Icon = "map-pin"
 })
 
--- 📍 Daftar lokasi teleport (CFrame lengkap)
 local teleportLocations = {
     ["Crater Islands"] = CFrame.new(1066.1864, 57.2025681, 5045.5542, -0.682534158, 1.00865822e-08, 0.730853677, -5.8900711e-09, 1, -1.93017531e-08, -0.730853677, -1.74788859e-08, -0.682534158),
     ["Tropical Grove"] = CFrame.new(-2165.05469, 2.77070165, 3639.87451, -0.589090407, -3.61497356e-08, -0.808067143, -3.20645626e-08, 1, -2.13606164e-08, 0.808067143, 1.3326984e-08, -0.589090407),
@@ -271,7 +270,6 @@ end
 
 TabTeleport:Dropdown({
     Title = "Select Teleport Location",
-    Desc = "Pilih lokasi tujuan",
     Values = locationNames,
     Value = nil,
     Multi = false,
