@@ -258,15 +258,10 @@ local teleportLocations = {
     ["Sacred Temple"] = CFrame.new(1468.44946, -22.1250019, -651.350342, -0.114698552, -1.09982246e-07, 0.993400335, -1.87054479e-08, 1, 1.08553166e-07, -0.993400335, -6.13110718e-09, -0.114698552),
 }
 
--- 🚀 Fungsi Teleport (pakai rotasi juga)
 local function teleportTo(cf)
     local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if hrp then
-        char:SetPrimaryPartCFrame(cf)
-    else
-        warn("❌ HumanoidRootPart tidak ditemukan!")
-    end
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    hrp.CFrame = cf
 end
 
 local locationNames = {}
