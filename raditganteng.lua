@@ -243,7 +243,7 @@ local TabTeleport = Window:Tab({
     Icon = "map-pin"
 })
 
-
+-- Daftar lokasi teleport
 local teleportLocations = {
     ["Crater Islands"] = CFrame.new(1066.1864, 57.2025681, 5045.5542, -0.682534158, 1.00865822e-08, 0.730853677, -5.8900711e-09, 1, -1.93017531e-08, -0.730853677, -1.74788859e-08, -0.682534158),
     ["Tropical Grove"] = CFrame.new(-2165.05469, 2.77070165, 3639.87451, -0.589090407, -3.61497356e-08, -0.808067143, -3.20645626e-08, 1, -2.13606164e-08, 0.808067143, 1.3326984e-08, -0.589090407),
@@ -258,26 +258,22 @@ local teleportLocations = {
     ["Sacred Temple"] = CFrame.new(1468.44946, -22.1250019, -651.350342, -0.114698552, -1.09982246e-07, 0.993400335, -1.87054479e-08, 1, 1.08553166e-07, -0.993400335, -6.13110718e-09, -0.114698552),
 }
 
-local teleportNames = {}
-for name, _ in pairs(teleportLocations) do
-    table.insert(teleportNames, name)
+local function teleportTo(cf)
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    hrp.CFrame = cf
 end
-
 local Dropdown = TabTeleport:Dropdown({
     Title = "Select Teleport Location",
     Desc = "Pilih lokasi untuk teleport",
-    Values = teleportNames,
-    Value = teleportNames[1],
+    Values = table.keys(teleportLocations),
+    Value = nil,
     Multi = false,
     AllowNone = false,
     Callback = function(selected)
         local cf = teleportLocations[selected]
         if cf then
             teleportTo(cf)
-            WindUI:Notify({
-                Title = "Teleport",
-                Content = "Berhasil teleport ke " .. selected
-            })
         else
             warn("Lokasi teleport tidak ditemukan:", selected)
         end
