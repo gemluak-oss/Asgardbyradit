@@ -4,11 +4,12 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local player = Players.LocalPlayer
 
+-- 🎃 Tema "Pumpkin Contrast"
 WindUI:AddTheme({
-    Name = "Pumpkin Contrast",
+    Name = "Pumpkin",
 
     Accent = Color3.fromHex("#FF8C32"),
-    Dialog = Color3.fromHex("#1C1B1A"),
+    Dialog = Color3.fromHex("#000000"),
     Outline = Color3.fromHex("#FFB14E"),
     Text = Color3.fromHex("#FF7B00"),
     Placeholder = Color3.fromHex("#DDA86B"),
@@ -16,24 +17,20 @@ WindUI:AddTheme({
     Button = Color3.fromHex("#FF9B26"),
     Icon = Color3.fromHex("#FF7B00")
 })
-WindUI:SetTheme("Pumpkin Contrast")
-
-
-
+WindUI:SetTheme("Pumpkin")
 
 local Window = WindUI:CreateWindow({
-    
     Icon = "rbxassetid://136343770817701",
     Title = "Ruinz",
-    Author = "Warung Ruinz",
-    Folder = "RuinzFish",
-    Theme = "Pumpkin Contrast",
-    SideBarWidth = 130,
+    Folder = "RuinzFishit",
+    Theme = "Pumpkin",
+    SideBarWidth = 140,
+    Resizable = false,
     Transparent = true,
-    Size = UDim2.fromOffset(500, 300),
+    Size = UDim2.fromOffset(400, 200),
     KeySystem = false,
     OpenButton = {
-        Icon = "rbxassetid://136343770817701", -- 🔥 Logo custom saat hide
+        Icon = "rbxassetid://136343770817701",
         CornerRadius = UDim.new(0, 16),
         StrokeThickness = 0,
         Color = ColorSequence.new(Color3.fromHex("FF0F7B"), Color3.fromHex("F89B29")),
@@ -43,8 +40,7 @@ local Window = WindUI:CreateWindow({
     }
 })
 
-Window:SetIconSize(50)
-
+Window:SetIconSize(45)
 
 
 --TabMain
@@ -90,25 +86,10 @@ local function castOnce()
     if not r then return end
 
     task.spawn(function()
-        -- Equip pancing
-        r.equip:FireServer(1)
-
-        task.wait(0.01)
-
-        -- Langsung kirim sinyal lempar (tanpa charge delay)
-        r.charge:InvokeServer(Workspace:GetServerTimeNow() - 1) -- manipulasi waktu biar instant
-
-        -- Kirim sinyal bait jatuh langsung ke air
-        r.mini:InvokeServer(-2, 1) -- makin negatif makin cepat nyentuh air
-
-        -- Langsung trigger state seolah sudah siap bite
-        if r.finish then
-            r.finish:FireServer() -- beberapa game butuh remote ini biar "ready to bite"
-        end
+        r.charge:InvokeServer(Workspace:GetServerTimeNow() - 1)
+        r.mini:InvokeServer(-2, 1)
     end)
 end
-
-
 
 local function recastBeforeBite()
     local r = getFishingRemotes()
@@ -117,19 +98,17 @@ local function recastBeforeBite()
         r.cancelIn:InvokeServer()
         task.wait(0.05)
         r.charge:InvokeServer(Workspace:GetServerTimeNow())
-        r.mini:InvokeServer(-0.10, 1)
+        r.mini:InvokeServer(-2, 1)
     end)
 end
 
 local function reelNow()
     local r = getFishingRemotes()
     if not r then return end
-
     task.spawn(function()
-        -- 🔥 Batch fire — kirim dalam paket kecil supaya server tetap tangkap semuanya
-        local batch = 5      -- banyaknya event per batch
-        local repeats = 8    -- jumlah batch (total 40 event)
-        local microDelay = 0.0001 -- jeda super tipis antar batch
+        local batch = 5
+        local repeats = 8
+        local microDelay = 0.0001
 
         for _ = 1, repeats do
             for i = 1, batch do
@@ -139,8 +118,6 @@ local function reelNow()
         end
     end)
 end
-
-
 
 local function startAutoFish()
     if autoFishLoop then task.cancel(autoFishLoop) end
@@ -165,10 +142,14 @@ local function stopAutoFish()
     end
 end
 
-
-local autoSellState = false
-local lastSell = 0
-local AUTO_SELL_DELAY = 30
+MainTab:Button({
+    Title = "Equip Rod",
+    Icon = "pointer",
+    Callback = function()
+        local r = getFishingRemotes()
+            r.equip:FireServer(1)
+    end
+})
 
 MainTab:Toggle({
     Title = "Auto Fish",
@@ -180,7 +161,7 @@ MainTab:Toggle({
 MainTab:Slider({
     Title = "Delay Spam",
     Step = 0.05,
-    Value = { Min = 0.01, Max = 2.0, Default = 0.5 },
+    Value = { Min = 0, Max = 2.0, Default = 0.5 },
     Callback = function(v)
         FuncAutoFish.preRecastDelay = v
     end
@@ -189,12 +170,16 @@ MainTab:Slider({
 MainTab:Slider({
     Title = "Delay Fishing",
     Step = 0.1,
-    Value = { Min = 0.5, Max = 3.0, Default = 1.5 },
+    Value = { Min = 0, Max = 3.0, Default = 1.5 },
     Callback = function(v)
         FuncAutoFish.biteDelay = v
     end
 })
 
+
+local autoSellState = false
+local lastSell = 0
+local AUTO_SELL_DELAY = 30
 
 MainTab:Toggle({
     Title = "Auto Sell",
