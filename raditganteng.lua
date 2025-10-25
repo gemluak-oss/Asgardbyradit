@@ -123,49 +123,39 @@ local function stopAutoFish()
     end
 end
 
-local AnimFolder = ReplicatedStorage:WaitForChild("Modules"):WaitForChild("Animations")
-local noAnimEnabled = false
-local animConnections = {}
-
-MainTab:Toggle({
-    Title = "No Animation",
-    Desc = "Menonaktifkan semua animasi dari Modules.Animations agar karakter benar-benar diam.",
-    Icon = "user-x",
-    Callback = function(value)
-        noAnimEnabled = value
-        local char = player.Character or player.CharacterAdded:Wait()
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if not humanoid then return end
-        local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
-        if value then
-            WindUI:Notify({ Title = "No Animation", Content = "Semua animasi dimatikan." })
-            for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
-                pcall(function() track:Stop() end)
-            end
-            local connection = animator.AnimationPlayed:Connect(function(track)
-                if noAnimEnabled then
-                    local anim = track.Animation
-                    if anim and anim:IsDescendantOf(AnimFolder) then
-                        pcall(function() track:Stop() end)
-                    end
-                end
-            end)
-            table.insert(animConnections, connection)
-        else
-            WindUI:Notify({ Title = "No Animation", Content = "Animasi diaktifkan kembali." })
-            for _, c in ipairs(animConnections) do
-                if typeof(c) == "RBXScriptConnection" then
-                    c:Disconnect()
-                end
-            end
-            animConnections = {}
-        end
-    end
-})
 
 local autoSellState = false
 local lastSell = 0
 local AUTO_SELL_DELAY = 30
+
+MainTab:Toggle({
+    Title = "Auto Fish",
+    Description = "Auto lempar + tarik ikan",
+    Callback = function(value)
+        if value then startAutoFish() else stopAutoFish() end
+    end
+})
+
+MainTab:Slider({
+    Title = "Delay Spam",
+    Desc = "Waktu sebelum recast (detik)",
+    Step = 0.1,
+    Value = { Min = 0.2, Max = 2.0, Default = 0.5 },
+    Callback = function(v)
+        FuncAutoFish.preRecastDelay = v
+    end
+})
+
+MainTab:Slider({
+    Title = "Delay Fishing",
+    Desc = "Waktu sebelum tarik ikan (detik)",
+    Step = 0.1,
+    Value = { Min = 0.5, Max = 3.0, Default = 1.5 },
+    Callback = function(v)
+        FuncAutoFish.biteDelay = v
+    end
+})
+
 
 MainTab:Toggle({
     Title = "Auto Sell",
@@ -210,31 +200,43 @@ MainTab:Toggle({
     end
 })
 
+local AnimFolder = ReplicatedStorage:WaitForChild("Modules"):WaitForChild("Animations")
+local noAnimEnabled = false
+local animConnections = {}
+
 MainTab:Toggle({
-    Title = "Auto Fish",
-    Description = "Auto lempar + tarik ikan",
+    Title = "No Animation",
+    Desc = "Menonaktifkan semua animasi dari Modules.Animations agar karakter benar-benar diam.",
+    Icon = "user-x",
     Callback = function(value)
-        if value then startAutoFish() else stopAutoFish() end
-    end
-})
-
-MainTab:Slider({
-    Title = "Delay Spam",
-    Desc = "Waktu sebelum recast (detik)",
-    Step = 0.1,
-    Value = { Min = 0.2, Max = 2.0, Default = 0.5 },
-    Callback = function(v)
-        FuncAutoFish.preRecastDelay = v
-    end
-})
-
-MainTab:Slider({
-    Title = "Delay Fishing",
-    Desc = "Waktu sebelum tarik ikan (detik)",
-    Step = 0.1,
-    Value = { Min = 0.5, Max = 3.0, Default = 1.5 },
-    Callback = function(v)
-        FuncAutoFish.biteDelay = v
+        noAnimEnabled = value
+        local char = player.Character or player.CharacterAdded:Wait()
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return end
+        local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
+        if value then
+            WindUI:Notify({ Title = "No Animation", Content = "Semua animasi dimatikan." })
+            for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                pcall(function() track:Stop() end)
+            end
+            local connection = animator.AnimationPlayed:Connect(function(track)
+                if noAnimEnabled then
+                    local anim = track.Animation
+                    if anim and anim:IsDescendantOf(AnimFolder) then
+                        pcall(function() track:Stop() end)
+                    end
+                end
+            end)
+            table.insert(animConnections, connection)
+        else
+            WindUI:Notify({ Title = "No Animation", Content = "Animasi diaktifkan kembali." })
+            for _, c in ipairs(animConnections) do
+                if typeof(c) == "RBXScriptConnection" then
+                    c:Disconnect()
+                end
+            end
+            animConnections = {}
+        end
     end
 })
 
