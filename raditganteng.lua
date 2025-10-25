@@ -307,17 +307,9 @@ TabTeleport:Button({
     Callback = function()
         if selectedLocation and teleportLocations[selectedLocation] then
             teleportTo(teleportLocations[selectedLocation])
-            WindUI:Notification({
-                Title = "Teleport Success",
-                Desc = "Berhasil teleport ke " .. selectedLocation,
-                Duration = 3
-            })
+
         else
-            WindUI:Notification({
-                Title = "Teleport Failed",
-                Desc = "Pilih lokasi terlebih dahulu!",
-                Duration = 3
-            })
+
         end
     end
 })
