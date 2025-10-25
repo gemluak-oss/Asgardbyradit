@@ -4,17 +4,36 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local player = Players.LocalPlayer
 
+WindUI:AddTheme({
+    Name = "Pumpkin Contrast",
+
+    Accent = Color3.fromHex("#FF8C32"),
+    Dialog = Color3.fromHex("#1C1B1A"),
+    Outline = Color3.fromHex("#FFB14E"),
+    Text = Color3.fromHex("#FF7B00"),
+    Placeholder = Color3.fromHex("#DDA86B"),
+    Background = Color3.fromHex("#000000"),
+    Button = Color3.fromHex("#FF9B26"),
+    Icon = Color3.fromHex("#FF7B00")
+})
+WindUI:SetTheme("Pumpkin Contrast")
+
+
+
+
 local Window = WindUI:CreateWindow({
-    Icon = "rbxassetid://109911968071802",
+    
+    Icon = "rbxassetid://136343770817701",
     Title = "Ruinz",
     Author = "Warung Ruinz",
     Folder = "RuinzFish",
-    Theme = "Crimson",
+    Theme = "Pumpkin Contrast",
+    SideBarWidth = 130,
     Transparent = true,
-    Size = UDim2.fromOffset(600, 400),
+    Size = UDim2.fromOffset(500, 300),
     KeySystem = false,
     OpenButton = {
-        Icon = "lock-open",
+        Icon = "rbxassetid://136343770817701", -- 🔥 Logo custom saat hide
         CornerRadius = UDim.new(0, 16),
         StrokeThickness = 0,
         Color = ColorSequence.new(Color3.fromHex("FF0F7B"), Color3.fromHex("F89B29")),
@@ -23,6 +42,9 @@ local Window = WindUI:CreateWindow({
         Draggable = true,
     }
 })
+
+Window:SetIconSize(50)
+
 
 
 --TabMain
@@ -104,15 +126,20 @@ local function reelNow()
     if not r then return end
 
     task.spawn(function()
-        -- reel super cepat tanpa delay berarti
-        for i = 1, 40 do
-            r.complete:FireServer()
-            if i % 10 == 0 then
-                task.wait(0.0005) -- micro sync tiap 10 kali, super cepat
+        -- 🔥 Batch fire — kirim dalam paket kecil supaya server tetap tangkap semuanya
+        local batch = 5      -- banyaknya event per batch
+        local repeats = 8    -- jumlah batch (total 40 event)
+        local microDelay = 0.0001 -- jeda super tipis antar batch
+
+        for _ = 1, repeats do
+            for i = 1, batch do
+                r.complete:FireServer()
             end
+            task.wait(microDelay)
         end
     end)
 end
+
 
 
 local function startAutoFish()
@@ -153,7 +180,7 @@ MainTab:Toggle({
 MainTab:Slider({
     Title = "Delay Spam",
     Step = 0.05,
-    Value = { Min = 0.05, Max = 2.0, Default = 0.5 },
+    Value = { Min = 0.01, Max = 2.0, Default = 0.5 },
     Callback = function(v)
         FuncAutoFish.preRecastDelay = v
     end
